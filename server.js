@@ -9,7 +9,6 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 
-// Route for news (headlines or search)
 app.get('/api/news', async (req, res) => {
   try {
     const { category = '', page = 1, pageSize = 5, q = '' } = req.query;
@@ -24,14 +23,14 @@ app.get('/api/news', async (req, res) => {
 
     if (q) {
       params.q = q;
+      params.language = 'en'; // optional: filter for English results
+      params.sortBy = 'publishedAt'; // optional: sort search results
     } else {
       params.country = 'us';
       if (category) params.category = category;
     }
 
-    const response = await axios.get(`https://newsapi.org/v2/${endpoint}`, {
-      params,
-    });
+    const response = await axios.get(`https://newsapi.org/v2/${endpoint}`, { params });
 
     res.json(response.data);
   } catch (error) {
